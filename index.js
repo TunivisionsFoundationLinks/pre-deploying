@@ -30,13 +30,12 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: process.env.PUBLIC_URL
-      ? process.env.PUBLIC_URL
-      : "http://localhost:5000",
+    origin: process.env.PUBLIC_URL,
     credentials: true,
     optionSuccessStatus: 200,
   })
 );
+console.log(process.env.PUBLIC_URL);
 /* working in the deploy*/
 // middleware
 app.use(express.json());
