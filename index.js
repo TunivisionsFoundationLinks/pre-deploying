@@ -27,33 +27,35 @@ import { fileURLToPath } from "url";
 
 const app = express();
 dotenv.config();
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Credentials", true);
-  next();
-});
-// middleware
-app.use(express.json());
-app.use(bodyParser.json({ limit: "30mb", extended: true }));
-app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+
 app.use(
   cors({
-    origin: process.env.PUBLIC_URL || "http://localhost:3000",
+    origin: process.env.PUBLIC_URL
+      ? process.env.PUBLIC_URL
+      : "http://localhost:5000",
     credentials: true,
     optionSuccessStatus: 200,
   })
 );
+
+// middleware
+app.use(express.json());
+app.use(bodyParser.json({ limit: "30mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use((req, res, next) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    process.env.PUBLIC_URL || "http://localhost:3000"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", true);
   next();
 });
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // to serve images inside public folder
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(express.static(path.join(__dirname, "build")));
+
+// All other routes should serve the "index.html" file
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 const PORT = process.env.PORT;
 const server = http.createServer(app);
@@ -61,12 +63,7 @@ const server = http.createServer(app);
 // socket connection
 createSocketServer(server);
 const CONNECTION = process.env.MONGODB_CONNECTION;
-app.use(express.static(path.join(__dirname, "build")));
 
-// All other routes should serve the "index.html" file
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
 mongoose
   .connect(CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => app.listen(PORT, () => console.log(`Listening at Port ${PORT}`)))
