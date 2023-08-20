@@ -36,7 +36,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(
   cors({
-    origin: "https://tlinkfrontend.netlify.app/",
+    origin: "https://tlinkfrontend.netlify.app" || "http://localhost:3000",
     credentials: true,
     optionSuccessStatus: 200,
   })
@@ -44,7 +44,7 @@ app.use(
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "http://https://tlinkfrontend.netlify.app/"
+    "http://https://tlinkfrontend.netlify.app" || "http://localhost:3000"
   );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
