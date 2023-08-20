@@ -51,11 +51,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(express.static(path.join(__dirname, "build")));
 
-// All other routes should serve the "index.html" file
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
 const PORT = process.env.PORT;
 const server = http.createServer(app);
 
